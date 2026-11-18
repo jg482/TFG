@@ -1,0 +1,479 @@
+/* ============================================================================
+   styles.css — Hoja de estilos minimalista y precisa (CSS)
+   ============================================================================
+   GUÍA RÁPIDA PARA EDITAR LOS ESTILOS SIN ROMPER NADA:
+   1. En el bloque :root (justo aquí abajo) tienes todos los colores y fuentes
+      centralizados. Si cambias un código de color ahí (ej: #1b4965), cambiará
+      automáticamente en toda la página.
+   2. Medidas más comunes que puedes ajustar a tu gusto:
+      - font-size: tamaño de la letra (en px o rem; 1rem equivale a 14px).
+      - padding: espacio interior de una caja (aire por dentro).
+      - margin: espacio exterior entre una caja y la siguiente.
+      - gap: separación entre elementos que están en fila o columna.
+      - border: grosor y color de las líneas divisorias (ej: 1px solid #d4cfc4).
+*/
+
+:root {
+  /* PUEDES EDITAR ESTOS COLORES (códigos hexadecimales con #): */
+  --bg-page: #f5f3ee;        /* Color de fondo general de la página (papel técnico claro) */
+  --bg-panel: #ffffff;       /* Color de fondo de las barras y cajas de gráficas (blanco puro) */
+  --bg-subtle: #ede9e0;      /* Color gris/crema suave para botones o fondos secundarios */
+  --border-light: #d4cfc4;   /* Color de las líneas finas que separan las cajas */
+  --border-strong: #1c1b18;  /* Color de los bordes principales oscuros */
+  --text-main: #181715;      /* Color principal de las letras (negro carbón) */
+  --text-muted: #5e5a52;     /* Color gris oscuro para textos secundarios y etiquetas */
+  --accent: #1b4965;         /* Color azul técnico para elementos activos o destacados */
+
+  /* PUEDES EDITAR LAS FUENTES TIPOGRÁFICAS: */
+  --font-title: "Newsreader", Georgia, serif;                  /* Fuente editorial para títulos */
+  --font-ui: "Space Grotesk", -apple-system, sans-serif;       /* Fuente limpia para botones y etiquetas */
+  --font-mono: "IBM Plex Mono", Consolas, monospace;           /* Fuente técnica para números y ejes */
+}
+
+/* Elimina márgenes por defecto del navegador para que todas las cajas midan exacto */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo base de toda la ventana */
+body {
+  background-color: var(--bg-page); /* Usa el color de fondo definido arriba */
+  color: var(--text-main);          /* Usa el color de letra principal */
+  font-family: var(--font-ui);      /* Fuente por defecto para los controles */
+  font-size: 14px;                  /* PUEDES EDITAR: tamaño base de letra de toda la web */
+  line-height: 1.45;                /* Separación vertical entre líneas de texto */
+}
+
+/* Clase especial que usa JavaScript para ocultar cajas (como la Gráfica 3 en Skogestad o el pop-up cerrado) */
+/* NO BORRAR ESTA CLASE */
+.hidden {
+  display: none !important;
+}
+
+/* ============================================================================
+   1. CABECERA SUPERIOR (.top-bar)
+   ============================================================================ */
+.top-bar {
+  background-color: var(--bg-panel);              /* Fondo blanco */
+  border-bottom: 1.5px solid var(--border-strong);/* Línea firme debajo de la cabecera */
+  padding: 0.75rem 1.4rem;                        /* PUEDES EDITAR: altura y margen lateral de la cabecera */
+  display: flex;                                  /* Coloca el título a la izquierda y los botones a la derecha */
+  justify-content: space-between;                 /* Separa ambos bloques a los extremos */
+  align-items: center;                            /* Los centra verticalmente */
+  flex-wrap: wrap;                                /* Si la pantalla es pequeña, permite que bajen a otra línea */
+  gap: 0.8rem;                                    /* Espacio mínimo entre izquierda y derecha */
+}
+
+/* Título principal de la página */
+.brand-block h1 {
+  font-family: var(--font-title); /* Fuente con serifa editorial */
+  font-size: 1.3rem;              /* PUEDES EDITAR: tamaño del título principal */
+  font-weight: 600;               /* Grosor de la letra (400 normal, 600 seminegrita) */
+  color: var(--text-main);
+}
+
+/* Subtítulo debajo del título principal */
+.subtitle {
+  font-size: 0.8rem;              /* PUEDES EDITAR: tamaño del subtítulo */
+  color: var(--text-muted);       /* Color gris suave */
+}
+
+/* Contenedor derecho de la cabecera (lectura del cursor + botones de zoom + botón ?) */
+.actions-block {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;                    /* PUEDES EDITAR: separación entre el recuadro de números y los botones */
+  flex-wrap: wrap;
+}
+
+/* Recuadro donde se leen los valores exactos al mover el ratón por las gráficas */
+.cursor-box {
+  font-family: var(--font-mono);             /* Fuente monoespaciada para que los números no bailen */
+  font-size: 0.76rem;                        /* PUEDES EDITAR: tamaño de los números del cursor */
+  background-color: var(--bg-page);          /* Fondo crema suave */
+  border: 1px solid var(--border-light);     /* Borde fino */
+  padding: 0.4rem 0.75rem;                   /* Espacio interior */
+  min-width: 440px;                          /* PUEDES EDITAR: ancho mínimo de la caja de lectura */
+  color: var(--text-main);
+}
+
+/* Grupo de los 3 botones de zoom pegados en bloque */
+.zoom-group {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);    /* Borde exterior del grupo de botones */
+}
+
+/* Estilo general de los botones ("Ampliar", "Reducir", "Ver todo", "Restaurar") */
+.btn {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;                        /* PUEDES EDITAR: tamaño de letra de los botones */
+  font-weight: 500;
+  background-color: var(--bg-panel);
+  color: var(--text-main);
+  border: none;
+  border-right: 1px solid var(--border-light);
+  padding: 0.4rem 0.7rem;                    /* PUEDES EDITAR: tamaño del botón */
+  cursor: pointer;                           /* Pone el icono de la mano al pasar el ratón */
+  transition: background-color 0.12s ease;
+}
+
+/* Quita la línea derecha al último botón del grupo para que no se duplique */
+.zoom-group .btn:last-child {
+  border-right: none;
+}
+
+/* El botón "Restaurar" va suelto, así que le ponemos borde completo */
+#btnResetDefaults {
+  border: 1px solid var(--border-strong);
+}
+
+/* Color cuando pasas el ratón por encima de un botón */
+.btn:hover {
+  background-color: var(--bg-subtle);
+}
+
+/* Botón discreto de Ayuda (?) */
+.btn-help {
+  width: 30px;                               /* PUEDES EDITAR: ancho del botón ? */
+  height: 30px;                              /* PUEDES EDITAR: alto del botón ? */
+  border: 1px solid var(--border-strong);
+  background-color: var(--text-main);        /* Fondo oscuro para identificarlo rápido */
+  color: var(--bg-panel);                    /* Signo ? en blanco */
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.12s ease;
+}
+
+/* Color del botón (?) al pasar el ratón por encima */
+.btn-help:hover {
+  background-color: var(--accent);           /* Cambia a azul técnico al pasar el ratón */
+  border-color: var(--accent);
+}
+
+/* ============================================================================
+   2. CONTENEDOR CENTRAL Y BARRA DE CONTROLES (.main-wrapper y .control-bar)
+   ============================================================================ */
+.main-wrapper {
+  max-width: 1380px;                         /* PUEDES EDITAR: ancho máximo del simulador en pantalla */
+  margin: 0.9rem auto 1.5rem;                /* Centra el contenido en la pantalla */
+  padding: 0 1.2rem;                         /* Margen lateral para que no toque los bordes del monitor */
+}
+
+/* Caja horizontal donde están los selectores de modelo y escenario */
+.control-bar {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  padding: 0.75rem 1rem;                     /* PUEDES EDITAR: aire interior de la barra de controles */
+  margin-bottom: 0.9rem;                     /* Separación entre la barra de controles y la primera gráfica */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;                     /* Alinea todos los controles por su base */
+  gap: 0.85rem 1.2rem;                       /* Separación vertical y horizontal entre cada control */
+}
+
+/* Cada bloque individual dentro de la barra de controles (etiqueta arriba + botón abajo) */
+.control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+/* Empuja el último bloque ("Ajuste de ejes") hacia el extremo derecho de la barra */
+.control-right {
+  margin-left: auto;
+}
+
+/* Texto pequeño encima de cada control ("Modelo físico", "Comparativa", etc.) */
+.control-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;                         /* PUEDES EDITAR: tamaño del título pequeño de cada control */
+  color: var(--text-muted);
+}
+
+/* Conmutador doble entre "1. Modelo Skogestad" y "2. Modelo CIGR Acoplado" */
+.model-switch {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  background-color: var(--bg-page);
+}
+
+/* Ocultamos el circulito feo por defecto del navegador en los radio buttons */
+.model-switch input[type="radio"] {
+  display: none;
+}
+
+/* Aspecto de cada pestaña del selector de modelo */
+.model-switch label {
+  padding: 0.36rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-right: 1px solid var(--border-strong);
+  cursor: pointer;
+  user-select: none;
+}
+
+.model-switch label:last-of-type {
+  border-right: none;
+}
+
+/* Cuando un modelo está seleccionado (:checked), se pinta con fondo oscuro y letra blanca */
+.model-switch input[type="radio"]:checked + label {
+  background-color: var(--text-main);
+  color: var(--bg-panel);
+}
+
+/* Cuando activas "Superponer ambos", atenúa el selector individual para indicar que se ven los dos */
+.model-switch input[type="radio"]:disabled + label {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Casillas de verificación ("Superponer ambos modelos" y "Auto-escala Y") */
+.check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-page);
+  font-size: 0.8rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.check-label input[type="checkbox"] {
+  accent-color: var(--accent);               /* Color del tic de la casilla */
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+/* Menú desplegable de escenarios climáticos */
+.select-input {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  padding: 0.36rem 0.6rem;
+  border: 1px solid var(--border-strong);
+  background-color: var(--bg-panel);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+/* Grupo de cajitas numéricas para el "Escalón Manual" */
+.manual-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  border: none;
+  border-left: 2px solid var(--accent);      /* Línea vertical azul que agrupa los datos manuales */
+  padding-left: 0.75rem;
+}
+
+/* Cajita donde escribes números (Tout inicial, Tout final, etc.) */
+.num-input {
+  width: 78px;                               /* PUEDES EDITAR: ancho de las cajitas de números */
+  padding: 0.34rem 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-panel);
+  color: var(--text-main);
+}
+
+.inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ============================================================================
+   3. PILA DE LAS 4 GRÁFICAS (.charts-stack y .chart-box)
+   ============================================================================ */
+.charts-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;                              /* PUEDES EDITAR: separación vertical entre una gráfica y la siguiente */
+}
+
+/* Caja individual de cada gráfica */
+.chart-box {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  padding: 0.55rem 0.85rem 0.5rem;           /* Espacio interior alrededor de la gráfica */
+}
+
+/* Cabecera de cada gráfica (título a la izquierda y leyenda de colores a la derecha) */
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Título de cada gráfica ("1. Temperatura Interior...", etc.) */
+.chart-header h2 {
+  font-family: var(--font-title);
+  font-size: 0.96rem;                        /* PUEDES EDITAR: tamaño del título de cada gráfica */
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.chart-note {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 0.35rem;
+}
+
+/* Leyenda de colores arriba a la derecha de cada gráfica */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+}
+
+/* Rayita de color que acompaña a cada nombre en la leyenda */
+.legend i {
+  width: 13px;
+  height: 2.5px;
+  display: inline-block;
+}
+
+/* Rayita discontinua en la leyenda cuando se superpone el modelo de Skogestad */
+.legend i.dashed {
+  height: 0;
+  border-top: 2px dashed var(--text-main);
+  background: transparent !important;
+}
+
+/* Marco que envuelve el lienzo (<canvas>) donde se pintan las curvas */
+.canvas-wrap {
+  width: 100%;
+  border: 1px solid #e5e0d5;
+  background-color: #ffffff;
+}
+
+.canvas-wrap canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: crosshair;                         /* Pone el cursor en forma de cruz de precisión sobre la gráfica */
+}
+
+/* ============================================================================
+   4. VENTANA EMERGENTE DE AYUDA / POP-UP (.modal-backdrop y .modal-window)
+   ============================================================================ */
+/* Fondo oscurecido semitransparente que cubre la pantalla cuando abres la ayuda (?) */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;                                  /* Ocupa toda la pantalla de esquina a esquina */
+  background-color: rgba(24, 23, 21, 0.55);  /* Velo oscuro semitransparente */
+  display: flex;
+  align-items: center;                       /* Centra la ventana verticalmente */
+  justify-content: center;                   /* Centra la ventana horizontalmente */
+  padding: 1.5rem;
+  z-index: 100;                              /* Se asegura de quedar por encima de todo */
+}
+
+/* Caja blanca de la ventana emergente */
+.modal-window {
+  background-color: var(--bg-panel);
+  border: 1.5px solid var(--border-strong);
+  max-width: 720px;                          /* PUEDES EDITAR: ancho máximo de la ventana de ayuda */
+  width: 100%;
+  max-height: 85vh;                          /* Altura máxima (85% de la pantalla); si hay más texto, sale barra de scroll */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Barra superior del pop-up con el título y el botón X */
+.modal-header {
+  padding: 0.85rem 1.2rem;
+  background-color: var(--bg-page);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-family: var(--font-title);
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+/* Botón X para cerrar la ventana emergente */
+.btn-close {
+  background: none;
+  border: 1px solid transparent;
+  font-size: 1.35rem;
+  line-height: 1;
+  padding: 0.1rem 0.45rem;
+  cursor: pointer;
+  color: var(--text-main);
+}
+
+.btn-close:hover {
+  border-color: var(--border-strong);
+  background-color: var(--bg-subtle);
+}
+
+/* Cuerpo interior desplazable con las explicaciones */
+.modal-body {
+  padding: 1.1rem 1.3rem;
+  overflow-y: auto;                          /* Permite hacer scroll dentro del pop-up si el texto es largo */
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* Cada apartado dentro de la ventana de ayuda */
+.help-section h3 {
+  font-family: var(--font-title);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.2rem;
+}
+
+.help-section ul {
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.help-section li {
+  font-size: 0.84rem;
+  color: var(--text-main);
+}
+
+.help-section code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background-color: var(--bg-page);
+  padding: 0.05rem 0.3rem;
+  border: 1px solid var(--border-light);
+}

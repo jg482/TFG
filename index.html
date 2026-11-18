@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<!-- ==========================================================================
+     index.html — Estructura de la página web (HTML)
+     ==========================================================================
+     GUÍA RÁPIDA PARA EDITAR ESTE ARCHIVO SIN ROMPER NADA:
+     1. Las etiquetas van entre símbolos < > (por ejemplo: <h1>Texto</h1>).
+     2. NUNCA cambies lo que pone dentro de id="..." porque el archivo app.js
+        busca esos nombres exactos para funcionar.
+     3. SÍ PUEDES CAMBIAR libremente cualquier texto negro/visible que esté
+        fuera de los símbolos < > (títulos, nombres de botones, explicaciones).
+     4. En los campos <input>, puedes cambiar value="0" para cambiar el valor
+        por defecto con el que arranca la página, o min="..." y max="...".
+-->
+<html lang="es">
+<head>
+  <!-- Codificación UTF-8 para que se vean bien las tildes, la ñ y el símbolo °C -->
+  <meta charset="UTF-8" />
+  <!-- Ajusta la escala automáticamente a pantallas de ordenador o portátil -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- PUEDES EDITAR: Título que aparece en la pestaña superior del navegador -->
+  <title>Simulador Climático de Establo — Modelos Skogestad y CIGR</title>
+
+  <!-- Cargamos las fuentes tipográficas (Newsreader para títulos, Space Grotesk para interfaz e IBM Plex Mono para números) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Conecta este archivo HTML con nuestra hoja de diseño visual (styles.css) -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. CABECERA SUPERIOR: Título, lectura del cursor, zoom y botón de ayuda (?)
+       ======================================================================== -->
+  <header class="top-bar">
+    <!-- Bloque izquierdo: Título principal y subtítulo corto -->
+    <div class="brand-block">
+      <!-- PUEDES EDITAR: El título principal de tu simulador -->
+      <h1>Control Climático de Establo Lechero</h1>
+      <!-- PUEDES EDITAR: El subtítulo descriptivo -->
+      <p class="subtitle">Simulación comparativa: Modelo de Skogestad vs. Modelo CIGR Acoplado</p>
+    </div>
+
+    <!-- Bloque derecho: Barra de valores del ratón, botones de zoom e icono (?) -->
+    <div class="actions-block">
+      <!-- Recuadro donde aparecen los números exactos al mover el ratón por las gráficas -->
+      <!-- NO CAMBIAR id="cursorReadout" -->
+      <div id="cursorReadout" class="cursor-box">
+        Pasa el ratón sobre cualquier gráfica para leer los valores exactos
+      </div>
+
+      <!-- Grupo de botones para acercar o alejar las gráficas -->
+      <div class="zoom-group">
+        <!-- PUEDES EDITAR el texto visible ("Ampliar", "Reducir", "Ver todo"), pero NO cambies los id="..." -->
+        <button type="button" id="btnZoomIn" class="btn" title="Acercar eje de tiempo">Ampliar</button>
+        <button type="button" id="btnZoomOut" class="btn" title="Alejar eje de tiempo">Reducir</button>
+        <button type="button" id="btnZoomReset" class="btn" title="Mostrar todo el tiempo">Ver todo</button>
+      </div>
+
+      <!-- Botón discreto de ayuda (?) que abre la ventana emergente explicativa -->
+      <!-- NO CAMBIAR id="btnHelp" -->
+      <button type="button" id="btnHelp" class="btn-help" title="Abrir guía de modelos, variables y controles" aria-label="Ayuda">?</button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. CONTENEDOR PRINCIPAL: Barra de controles esenciales + 4 Gráficas
+       ======================================================================== -->
+  <main class="main-wrapper">
+
+    <!-- ----------------------------------------------------------------------
+         2A. BARRA DE CONTROLES (Selector de modelo, escenario y modo manual)
+         ---------------------------------------------------------------------- -->
+    <section class="control-bar" aria-label="Controles de simulación">
+
+      <!-- CONTROL 1: Selector entre los dos únicos modelos -->
+      <div class="control-item">
+        <!-- PUEDES EDITAR este título de etiqueta -->
+        <span class="control-label">Modelo físico</span>
+        <div class="model-switch">
+          <!-- Opción 1: Modelo de Skogestad. Si pones "checked" aquí, arrancará seleccionado este -->
+          <input type="radio" name="modelSwitch" id="radSkogestad" value="skogestad" checked />
+          <!-- PUEDES EDITAR el texto dentro de <label> -->
+          <label for="radSkogestad">1. Modelo Skogestad (Seco)</label>
+
+          <!-- Opción 2: Modelo CIGR Acoplado -->
+          <input type="radio" name="modelSwitch" id="radLatent" value="latent" />
+          <!-- PUEDES EDITAR el texto dentro de <label> -->
+          <label for="radLatent">2. Modelo CIGR Acoplado</label>
+        </div>
+      </div>
+
+      <!-- CONTROL 2: Casilla para superponer ambos modelos en la misma gráfica -->
+      <div class="control-item">
+        <span class="control-label">Comparativa</span>
+        <label class="check-label" for="chkOverlay">
+          <!-- Si añades la palabra checked antes de />, arrancará con los dos modelos superpuestos -->
+          <input type="checkbox" id="chkOverlay" />
+          <span>Superponer ambos modelos</span>
+        </label>
+      </div>
+
+      <!-- CONTROL 3: Lista desplegable de escenarios climáticos exteriores -->
+      <div class="control-item">
+        <label class="control-label" for="selScenario">Escenario exterior T<sub>out</sub>(t)</label>
+        <!-- NO CAMBIAR id="selScenario" ni los value="..." de cada <option>, pero SÍ puedes editar los textos negros -->
+        <select id="selScenario" class="select-input">
+          <option value="skogestad">Escalones de Skogestad (0 a 74 000 s)</option>
+          <option value="invierno">Invierno Molina de Aragón (-26 °C, 96 h)</option>
+          <option value="verano">Verano Seco (+37 °C, 96 h)</option>
+          <option value="verano_humedo">Verano Húmedo Valle del Ebro (96 h)</option>
+          <option value="manual">Escalón Manual (Personalizado)</option>
+        </select>
+      </div>
+
+      <!-- CONTROL 4: Parámetros del Escalón Manual (se ocultan solos si no eliges "Escalón Manual") -->
+      <!-- PUEDES EDITAR: min="...", max="...", step="..." (salto de la flechita) y value="..." (valor inicial) -->
+      <fieldset id="manualParams" class="manual-group hidden">
+        <div class="control-item">
+          <label class="control-label" for="inpTout0">T<sub>out</sub> inicial (°C)</label>
+          <input id="inpTout0" class="num-input" type="number" min="-40" max="45" step="1" value="0" />
+        </div>
+        <div class="control-item">
+          <label class="control-label" for="inpToutStep">T<sub>out</sub> final (°C)</label>
+          <input id="inpToutStep" class="num-input" type="number" min="-40" max="45" step="1" value="-20" />
+        </div>
+        <div class="control-item">
+          <label class="control-label" for="inpTStepH">Hora escalón (h)</label>
+          <input id="inpTStepH" class="num-input" type="number" min="0" max="200" step="1" value="4" />
+        </div>
+        <div class="control-item">
+          <label class="control-label" for="inpDurH">Duración (h)</label>
+          <input id="inpDurH" class="num-input" type="number" min="2" max="240" step="2" value="24" />
+        </div>
+        <div class="control-item">
+          <label class="control-label" for="inpHRExt">HR exterior (%)</label>
+          <input id="inpHRExt" class="num-input" type="number" min="10" max="100" step="5" value="60" />
+        </div>
+      </fieldset>
+
+      <!-- CONTROL 5: Auto-escala vertical Y y botón de restaurar valores por defecto -->
+      <div class="control-item control-right">
+        <span class="control-label">Ajuste de ejes</span>
+        <div class="inline-actions">
+          <label class="check-label" for="chkAutoY">
+            <input type="checkbox" id="chkAutoY" />
+            <span>Auto-escala Y</span>
+          </label>
+          <button type="button" id="btnResetDefaults" class="btn">Restaurar</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         2B. ZONA DE GRÁFICAS: Las 4 gráficas alineadas verticalmente
+         ----------------------------------------------------------------------
+         PUEDES EDITAR:
+         - Los títulos dentro de <h2>...</h2>.
+         - La altura de cada gráfica cambiando height="210" en la etiqueta <canvas>.
+    -->
+    <section class="charts-stack" aria-label="Gráficas de resultados">
+
+      <!-- GRÁFICA 1: Temperaturas Interior y Exterior -->
+      <article class="chart-box">
+        <header class="chart-header">
+          <h2>1. Temperatura Interior T (°C) y Temperatura Exterior T<sub>out</sub> (°C)</h2>
+          <!-- Aquí app.js coloca automáticamente los cuadritos de color de la leyenda -->
+          <div class="legend" id="legendTemp"></div>
+        </header>
+        <div class="canvas-wrap">
+          <canvas id="chartTemp" width="1280" height="215"></canvas>
+        </div>
+      </article>
+
+      <!-- GRÁFICA 2: Concentración de CO2 -->
+      <article class="chart-box">
+        <header class="chart-header">
+          <h2>2. Calidad del Aire — Concentración de CO₂ Interior (ppm)</h2>
+          <div class="legend" id="legendCO2"></div>
+        </header>
+        <div class="canvas-wrap">
+          <canvas id="chartCO2" width="1280" height="195"></canvas>
+        </div>
+      </article>
+
+      <!-- GRÁFICA 3: Humedad Relativa, THI y Leche (se muestra solo cuando está activo el Modelo CIGR) -->
+      <article class="chart-box hidden" id="boxLatent">
+        <header class="chart-header">
+          <h2>
+            3. Psicrometría y Bienestar — Humedad Relativa RH (%), Índice THI y Leche Y₁
+            <small id="latentNote" class="chart-note"></small>
+          </h2>
+          <div class="legend" id="legendLatent"></div>
+        </header>
+        <div class="canvas-wrap">
+          <canvas id="chartLatent" width="1280" height="205"></canvas>
+        </div>
+      </article>
+
+      <!-- GRÁFICA 4: Señales de los actuadores u1, u2 y u3 -->
+      <article class="chart-box">
+        <header class="chart-header">
+          <h2>4. Señales de Control — Ventilación u₁ (%), Calefacción u₂ (%) y Nebulización u₃ (%)</h2>
+          <div class="legend" id="legendControl"></div>
+        </header>
+        <div class="canvas-wrap">
+          <canvas id="chartControl" width="1280" height="205"></canvas>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       3. VENTANA EMERGENTE DE AYUDA (POP-UP AL PULSAR EL ICONO "?")
+       ========================================================================
+       PUEDES EDITAR libremente todos los textos explicativos dentro de <p> y <li>.
+  -->
+  <div id="helpModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal-window">
+      <!-- Cabecera de la ventana emergente con botón X para cerrar -->
+      <header class="modal-header">
+        <h2 id="helpTitle">Guía del Simulador: Modelos, Variables y Controles</h2>
+        <button type="button" id="btnCloseHelp" class="btn-close" aria-label="Cerrar ventana">×</button>
+      </header>
+
+      <!-- Contenido explicativo dividido en 3 bloques claros -->
+      <div class="modal-body">
+
+        <!-- BLOQUE 1: Qué es cada modelo -->
+        <section class="help-section">
+          <h3>1. ¿Qué diferencia hay entre los dos modelos?</h3>
+          <ul>
+            <li>
+              <strong>1. Modelo Skogestad (Seco):</strong>
+              Es el modelo base del artículo de Sigurd Skogestad (IFAC 2026). Asume que cada vaca emite una potencia térmica fija de <code>1000 W</code> íntegramente en forma de calor sensible (que calienta el aire). Modela únicamente dos estados: la temperatura interior <code>T</code> y la concentración de <code>CO₂</code>. No incluye humedad ni enfriamiento por agua nebulizada.
+            </li>
+            <li>
+              <strong>2. Modelo CIGR Acoplado:</strong>
+              Incorpora las ecuaciones fisiológicas de la Comisión Internacional de Ingeniería Rural (CIGR 2002) y la entalpía dinámica de vaporización de ASHRAE <code>h_fg(T) = (2501 - 2.361·T) kJ/kg</code>. Divide el calor de las 80 vacas en <em>calor sensible</em> (que calienta la nave) y <em>calor latente</em> (transpiración y respiración que añaden vapor de agua al aire). Añade el balance de humedad absoluta <code>w</code> y el sistema de enfriamiento evaporativo por agua nebulizada <code>u₃</code>.
+            </li>
+          </ul>
+        </section>
+
+        <!-- BLOQUE 2: Qué significa cada variable -->
+        <section class="help-section">
+          <h3>2. Significado de las variables en las gráficas</h3>
+          <ul>
+            <li><strong>T<sub>out</sub> (°C):</strong> Temperatura exterior en la calle (perturbación climática).</li>
+            <li><strong>T<sub>in</sub> (°C):</strong> Temperatura del aire dentro del establo. El rango de confort está entre <code>5 °C</code> y <code>20 °C</code> (y nunca debe bajar de <code>0 °C</code> para evitar congelación).</li>
+            <li><strong>CO₂ (ppm):</strong> Concentración de dióxido de carbono interior en partes por millón. El límite deseado de confort es <code>1000 ppm</code> y el límite máximo de seguridad vital es <code>3000 ppm</code>.</li>
+            <li><strong>RH (%):</strong> Humedad relativa interior (solo en el Modelo CIGR). Si supera el <code>78%</code> en verano, se recorta la nebulización para no saturar el ambiente.</li>
+            <li><strong>THI (Índice de Temperatura y Humedad):</strong> Indicador de estrés térmico del ganado bovino. Por encima de <code>72</code> puntos comienza la caída en la producción de leche.</li>
+            <li><strong>Leche Y₁ (kg/d):</strong> Producción diaria de leche por vaca (nominal <code>25 kg/día</code> en condiciones de confort).</li>
+            <li><strong>u₁ Ventilador (%):</strong> Caudal de extracción de aire (de <code>0.1 m³/s</code> al 0% hasta <code>15.0 m³/s</code> al 100%). Su velocidad nominal de reposo es el <code>50%</code>.</li>
+            <li><strong>u₂ Calefactor (%):</strong> Potencia del calefactor auxiliar (de <code>0 kW</code> a <code>50 kW</code>). Se enciende cuando la temperatura interior baja de <code>4 °C</code>.</li>
+            <li><strong>u₃ Nebulización (%):</strong> Caudal de agua pulverizada a alta presión en el Modelo CIGR. Se activa en verano cuando la temperatura supera los <code>22 °C</code> para enfriar el aire por evaporación.</li>
+          </ul>
+        </section>
+
+        <!-- BLOQUE 3: Cómo funcionan los controles -->
+        <section class="help-section">
+          <h3>3. ¿Cómo usar los controles y el zoom?</h3>
+          <ul>
+            <li><strong>Cambiar o comparar modelos:</strong> Usa los botones superiores para ver cada modelo por separado, o marca la casilla <em>"Superponer ambos modelos"</em> para comparar en la misma gráfica las curvas del Modelo CIGR (línea continua) frente al Modelo de Skogestad (línea discontinua).</li>
+            <li><strong>Escenario exterior:</strong> Elige entre el ensayo académico de escalones de Skogestad (74 000 s), episodios climáticos reales de 96 horas (Invierno o Verano) o un <em>Escalón Manual</em> donde tú eliges la temperatura inicial, la final y la hora del cambio.</li>
+            <li><strong>Inspección y Zoom:</strong> Mueve el ratón sobre cualquier gráfica para leer los valores exactos en la barra superior. Arrastra con el clic izquierdo sobre un tramo de la gráfica (o gira la rueda del ratón) para ampliar esa zona; haz <strong>doble clic</strong> sobre la gráfica o pulsa <em>"Ver todo"</em> para volver a la vista completa.</li>
+          </ul>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. CONEXIÓN CON LOS ARCHIVOS DE LÓGICA MATEMÁTICA Y VISUAL (.JS)
+       ========================================================================
+       Orden obligatorio: primero brain.js (ecuaciones) y segundo app.js (gráficas).
+  -->
+  <script src="brain.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
